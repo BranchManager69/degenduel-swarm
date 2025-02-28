@@ -26,23 +26,30 @@ import { createRealtimeConnection } from "./lib/realtimeConnection";
 import { allAgentSets, defaultAgentSetKey } from "@/app/agentConfigs";
 
 function App() {
+  // Get the search params from the URL
   const searchParams = useSearchParams();
 
+  // Transcript
   const { transcriptItems, addTranscriptMessage, addTranscriptBreadcrumb } =
     useTranscript();
   const { logClientEvent, logServerEvent } = useEvent();
 
+  // Agent
   const [selectedAgentName, setSelectedAgentName] = useState<string>("");
   const [selectedAgentConfigSet, setSelectedAgentConfigSet] =
     useState<AgentConfig[] | null>(null);
 
+  // Real-time connection
   const [dataChannel, setDataChannel] = useState<RTCDataChannel | null>(null);
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const dcRef = useRef<RTCDataChannel | null>(null);
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
+
+  // Session
   const [sessionStatus, setSessionStatus] =
     useState<SessionStatus>("DISCONNECTED");
 
+  // UI
   const [isEventsPaneExpanded, setIsEventsPaneExpanded] =
     useState<boolean>(true);
   const [userText, setUserText] = useState<string>("");
@@ -51,11 +58,15 @@ function App() {
   const [isAudioPlaybackEnabled, setIsAudioPlaybackEnabled] =
     useState<boolean>(true);
 
+  // Send a client event to the server
   const sendClientEvent = (eventObj: any, eventNameSuffix = "") => {
     if (dcRef.current && dcRef.current.readyState === "open") {
+      // Log the event if the data channel is open
       logClientEvent(eventObj, eventNameSuffix);
+      // Send the event to the server
       dcRef.current.send(JSON.stringify(eventObj));
     } else {
+      // Log an error if the data channel is not open
       logClientEvent(
         { attemptedEvent: eventObj.type },
         "error.data_channel_not_open"
@@ -67,6 +78,7 @@ function App() {
     }
   };
 
+  // Handle server events
   const handleServerEventRef = useHandleServerEvent({
     setSessionStatus,
     selectedAgentName,
@@ -75,46 +87,58 @@ function App() {
     setSelectedAgentName,
   });
 
+  // Use effect to set the agent config
   useEffect(() => {
     let finalAgentConfig = searchParams.get("agentConfig");
     if (!finalAgentConfig || !allAgentSets[finalAgentConfig]) {
       finalAgentConfig = defaultAgentSetKey;
+      // Update the URL with the default agent config
       const url = new URL(window.location.toString());
       url.searchParams.set("agentConfig", finalAgentConfig);
       window.location.replace(url.toString());
       return;
     }
 
+    // Get the agents from the agent config
     const agents = allAgentSets[finalAgentConfig];
+
+    // Set the first agent as the selected agent
     const agentKeyToUse = agents[0]?.name || "";
 
+    // Set the selected agent and config set
     setSelectedAgentName(agentKeyToUse);
     setSelectedAgentConfigSet(agents);
   }, [searchParams]);
 
+  // Use effect to connect to realtime
   useEffect(() => {
     if (selectedAgentName && sessionStatus === "DISCONNECTED") {
       connectToRealtime();
     }
   }, [selectedAgentName]);
 
+  // Use effect to add a transcript breadcrumb
   useEffect(() => {
     if (
       sessionStatus === "CONNECTED" &&
       selectedAgentConfigSet &&
       selectedAgentName
     ) {
+      // Get the current agent
       const currentAgent = selectedAgentConfigSet.find(
         (a) => a.name === selectedAgentName
       );
+      // Add a transcript breadcrumb
       addTranscriptBreadcrumb(
         `Agent: ${selectedAgentName}`,
         currentAgent
       );
+      // Update the session
       updateSession(true);
     }
   }, [selectedAgentConfigSet, selectedAgentName, sessionStatus]);
 
+  // Use effect to update the session
   useEffect(() => {
     if (sessionStatus === "CONNECTED") {
       console.log(
@@ -124,6 +148,7 @@ function App() {
     }
   }, [isPTTActive]);
 
+  // Fetch the ephemeral key
   const fetchEphemeralKey = async (): Promise<string | null> => {
     logClientEvent({ url: "/session" }, "fetch_session_token_request");
     const tokenResponse = await fetch("/api/session");
@@ -140,6 +165,7 @@ function App() {
     return data.client_secret.value;
   };
 
+  // Connect to realtime
   const connectToRealtime = async () => {
     if (sessionStatus !== "DISCONNECTED") return;
     setSessionStatus("CONNECTING");
@@ -182,6 +208,7 @@ function App() {
     }
   };
 
+  // Disconnect from realtime
   const disconnectFromRealtime = () => {
     if (pcRef.current) {
       pcRef.current.getSenders().forEach((sender) => {
@@ -200,6 +227,7 @@ function App() {
     logClientEvent({}, "disconnected");
   };
 
+  // Send a simulated user message
   const sendSimulatedUserMessage = (text: string) => {
     const id = uuidv4().slice(0, 32);
     addTranscriptMessage(id, "user", text, true);
@@ -222,6 +250,7 @@ function App() {
     );
   };
 
+  // Update the session
   const updateSession = (shouldTriggerResponse: boolean = false) => {
     sendClientEvent(
       { type: "input_audio_buffer.clear" },
@@ -266,6 +295,7 @@ function App() {
     }
   };
 
+  // Cancel assistant speech
   const cancelAssistantSpeech = async () => {
     const mostRecentAssistantMessage = [...transcriptItems]
       .reverse()
@@ -292,6 +322,7 @@ function App() {
     );
   };
 
+  // Handle send text message
   const handleSendTextMessage = () => {
     if (!userText.trim()) return;
     cancelAssistantSpeech();
@@ -312,6 +343,7 @@ function App() {
     sendClientEvent({ type: "response.create" }, "trigger response");
   };
 
+  // Handle talk button down
   const handleTalkButtonDown = () => {
     if (sessionStatus !== "CONNECTED" || dataChannel?.readyState !== "open")
       return;
@@ -321,6 +353,7 @@ function App() {
     sendClientEvent({ type: "input_audio_buffer.clear" }, "clear PTT buffer");
   };
 
+  // Handle talk button up
   const handleTalkButtonUp = () => {
     if (
       sessionStatus !== "CONNECTED" ||
@@ -334,6 +367,7 @@ function App() {
     sendClientEvent({ type: "response.create" }, "trigger response PTT");
   };
 
+  // Toggle connection
   const onToggleConnection = () => {
     if (sessionStatus === "CONNECTED" || sessionStatus === "CONNECTING") {
       disconnectFromRealtime();
@@ -343,6 +377,7 @@ function App() {
     }
   };
 
+  // Handle agent change
   const handleAgentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newAgentConfig = e.target.value;
     const url = new URL(window.location.toString());
@@ -350,6 +385,7 @@ function App() {
     window.location.replace(url.toString());
   };
 
+  // Handle selected agent change
   const handleSelectedAgentChange = (
     e: React.ChangeEvent<HTMLSelectElement>
   ) => {
@@ -357,6 +393,7 @@ function App() {
     setSelectedAgentName(newAgentName);
   };
 
+  // Use effect to set the UI state from local storage
   useEffect(() => {
     const storedPushToTalkUI = localStorage.getItem("pushToTalkUI");
     if (storedPushToTalkUI) {
@@ -374,6 +411,7 @@ function App() {
     }
   }, []);
 
+  // Use effect to save the UI state to local storage
   useEffect(() => {
     localStorage.setItem("pushToTalkUI", isPTTActive.toString());
   }, [isPTTActive]);
@@ -382,6 +420,7 @@ function App() {
     localStorage.setItem("logsExpanded", isEventsPaneExpanded.toString());
   }, [isEventsPaneExpanded]);
 
+  // Use effect to save the audio playback state to local storage
   useEffect(() => {
     localStorage.setItem(
       "audioPlaybackEnabled",
@@ -389,6 +428,7 @@ function App() {
     );
   }, [isAudioPlaybackEnabled]);
 
+  // Use effect to play or pause the audio element
   useEffect(() => {
     if (audioElementRef.current) {
       if (isAudioPlaybackEnabled) {
@@ -401,42 +441,56 @@ function App() {
     }
   }, [isAudioPlaybackEnabled]);
 
+  // Get the agent set key from the search params
   const agentSetKey = searchParams.get("agentConfig") || "default";
 
+  // Render the app
   return (
-    <div className="text-base flex flex-col h-screen bg-gray-100 text-gray-800 relative">
-      <div className="p-5 text-lg font-semibold flex justify-between items-center">
+
+    // Main container
+    <div className="text-base flex flex-col h-screen bg-gray-900 text-gray-100 relative">
+
+      {/* Header */}
+      <div className="p-5 text-lg font-semibold flex justify-between items-center bg-indigo-800 text-white shadow-lg">
+
+        {/* Reload button */}
         <div className="flex items-center">
+
+          {/* Reload the page */}
           <div onClick={() => window.location.reload()} style={{ cursor: 'pointer' }}>
-            <Image
-              src="/openai-logomark.svg"
-              alt="OpenAI Logo"
-              width={20}
-              height={20}
-              className="mr-2"
-            />
+
+            {/* DegenDuel Logo */}
+            <div className="flex items-center mr-2">
+              <span className="dice-emoji">🎲</span>
+            </div>
+
           </div>
+          
+          {/* DegenDuel Title */}
           <div>
-            Realtime API <span className="text-gray-500">Agents</span>
+            <span className="font-bold">DegenDuel</span> <span className="gradient-text">Crypto Showdown</span>
           </div>
+
         </div>
+
+        {/* Mode Selector */}
         <div className="flex items-center">
-          <label className="flex items-center text-base gap-1 mr-2 font-medium">
-            Scenario
-          </label>
+
+          {/* Version selector when needed */}
           <div className="relative inline-block">
+
+            {/* Version dropdown select */}
             <select
               value={agentSetKey}
               onChange={handleAgentChange}
-              className="appearance-none border border-gray-300 rounded-lg text-base px-2 py-1 pr-8 cursor-pointer font-normal focus:outline-none"
+              className="appearance-none border border-indigo-500 bg-indigo-900 text-white rounded-lg text-base px-2 py-1 pr-8 cursor-pointer font-normal focus:outline-none"
             >
-              {Object.keys(allAgentSets).map((agentKey) => (
-                <option key={agentKey} value={agentKey}>
-                  {agentKey}
-                </option>
-              ))}
+              <option value="degenDuel">Standard Version</option>
+              <option value="degenDuel_SUPERADMIN">Admin Version</option>
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-600">
+              
+            {/* Dropdown arrow */}
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-indigo-300">
               <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"
@@ -445,26 +499,36 @@ function App() {
                 />
               </svg>
             </div>
+
           </div>
 
+          {/* Role selector */}
           {agentSetKey && (
             <div className="flex items-center ml-6">
-              <label className="flex items-center text-base gap-1 mr-2 font-medium">
-                Agent
+
+              {/* Role label */}
+              <label className="flex items-center text-base gap-1 mr-2 font-medium text-emerald-400">
+                Game Role
               </label>
+
+              {/* Role dropdown select */}
               <div className="relative inline-block">
+
+                {/* Role dropdown select */}
                 <select
                   value={selectedAgentName}
                   onChange={handleSelectedAgentChange}
-                  className="appearance-none border border-gray-300 rounded-lg text-base px-2 py-1 pr-8 cursor-pointer font-normal focus:outline-none"
+                  className="appearance-none border border-emerald-500 bg-indigo-900 text-white rounded-lg text-base px-2 py-1 pr-8 cursor-pointer font-normal focus:outline-none"
                 >
                   {selectedAgentConfigSet?.map(agent => (
                     <option key={agent.name} value={agent.name}>
-                      {agent.name}
+                      {agent.name.includes("gameMaster") ? "Game Master" : "Player"}
                     </option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-600">
+
+                {/* Dropdown arrow */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-emerald-300">
                   <svg
                     className="h-4 w-4"
                     viewBox="0 0 20 20"
@@ -483,7 +547,10 @@ function App() {
         </div>
       </div>
 
+      {/* Transcript container */}
       <div className="flex flex-1 gap-2 px-2 overflow-hidden relative">
+
+        {/* Transcript */}
         <Transcript
           userText={userText}
           setUserText={setUserText}
@@ -494,9 +561,11 @@ function App() {
           }
         />
 
+        {/* Events */}
         <Events isExpanded={isEventsPaneExpanded} />
       </div>
 
+      {/* Bottom toolbar */}
       <BottomToolbar
         sessionStatus={sessionStatus}
         onToggleConnection={onToggleConnection}
@@ -510,8 +579,11 @@ function App() {
         isAudioPlaybackEnabled={isAudioPlaybackEnabled}
         setIsAudioPlaybackEnabled={setIsAudioPlaybackEnabled}
       />
+
+      {/* End of main container */}
     </div>
   );
 }
 
+// Export the app
 export default App;

@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Realtime API Agents",
-  description: "A demo app from OpenAI.",
+  title: "DegenDuel | Strategic Crypto Portfolio Competition",
+  description: "Compete in strategic Solana token portfolio contests with AI-driven gameplay. Form alliances, make strategic moves, and eliminate opponents to win SOL rewards.",
+  icons: {
+    icon: '/dice-icon.svg',
+  },
 };
 
 export default function RootLayout({
