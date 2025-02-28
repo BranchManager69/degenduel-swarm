@@ -23,31 +23,59 @@ npm run dev
 # Or run in background
 npm run dev-bg
 
-# Alternative port (3019) if needed
-npm run dev-alt
-npm run dev-alt-bg
-
 # Build for production
 npm run build
 
-# Start production server
+# Start production server (port 3010)
 npm run start
-# Or deploy (build + start) in one command
+# Or run in background (recommended)
+npm run start-bg
+
+# Deploy (build + start) in one command
 npm run deploy-bg
 
+# Run both environments simultaneously
+npm run build           # First build production assets
+npm run dev-bg          # Start development server in background
+npm run start-bg        # Start production server in background
+npm run status          # Check status of both servers
+
 # Utility commands
-npm run kill       # Stop all servers
-npm run logs       # View server logs
-npm run status     # Check server status
-npm run clear-logs # Clear log file
+npm run kill-dev        # Stop development server (port 3009)
+npm run kill-prod       # Stop production server (port 3010)
+npm run kill-all        # Stop all servers
+npm run logs-dev        # View development server logs
+npm run logs-prod       # View production server logs
+npm run logs-all        # List all log files
+npm run status          # Check server status
+npm run port-check      # Check port availability
 ```
 
 ## Project Structure
 
-- Next.js app router with React components
-- WebRTC communication with data channels
-- Agent configurations in `src/app/agentConfigs` directory
-- OpenAI Realtime API for voice interactions
+- **Frontend**: Next.js app router with React components
+- **Communication**: WebRTC with data channels for real-time messaging
+- **Agent Configurations**: Located in `src/app/agentConfigs` directory
+- **Voice Interactions**: OpenAI Realtime API for audio processing
+- **Environment Management**:
+  - Development server runs on port 3009
+  - Production server runs on port 3010
+- **Logging**:
+  - Organized in `logs/` directory
+  - Separate subdirectories for development and production
+  - Date-based log files (YYYY-MM-DD.log)
+
+## Documentation
+
+For more detailed information, see these documentation files:
+
+- `CLAUDE.md` - Core development guidelines and commands
+- `docs/DEPLOYMENT.md` - Production deployment instructions
+- `docs/NGINX_SETUP.md` - NGINX configuration for production
+- `docs/ENVIRONMENT_SETUP.md` - Environment variable configuration
+- `docs/LOGGING.md` - Logging system details
+- `docs/WHAT_IS_DEGENDUEL.md` - Game concept overview
+- `docs/DEGENDUEL_GAME_FLOW.md` - Detailed gameplay mechanics
 
 ## Game Flow
 

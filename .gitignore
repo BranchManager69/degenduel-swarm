@@ -38,3 +38,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 todo.md
+
+# logs
+*.log
+/logs/
+degenduel*.log

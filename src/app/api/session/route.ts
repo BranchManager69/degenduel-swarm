@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { OPENAI_API_BASE_URL, OPENAI_REALTIME_MODEL } from "@/app/lib/constants";
 
 export async function GET() {
   try {
     const response = await fetch(
-      "https://api.openai.com/v1/realtime/sessions",
+      `${OPENAI_API_BASE_URL}/realtime/sessions`,
       {
         method: "POST",
         headers: {
@@ -11,7 +12,7 @@ export async function GET() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-4o-realtime-preview-2024-12-17",
+          model: OPENAI_REALTIME_MODEL,
         }),
       }
     );
