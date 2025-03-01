@@ -1,10 +1,21 @@
 import { AgentConfig } from "@/app/types";
 
-const returns: AgentConfig = {
-  name: "returns",
-  publicDescription:
-    "Customer Service Agent specialized in order lookups, policy checks, and return initiations.",
-  instructions: `
+// Model for chat completions
+const MODEL_CHAT_COMPLETIONS = "o1-mini";
+//// Model for realtime
+//const MODEL_REALTIME = "gpt-4o-realtime-preview-2024-12-17";
+
+
+/* Agent Config */
+
+/*
+  |---------------|
+  | RETURNS AGENT |
+  |---------------|
+*/
+const returns_agent_name = "Jane";
+const returns_agent_public_description = "Customer Service Agent specialized in order lookups, policy checks, and return initiations.";
+const returns_agent_instructions = `
 # Personality and Tone
 ## Identity
 You are a calm and approachable online store assistant specializing in snowboarding gear—especially returns. Imagine you've spent countless seasons testing snowboards and equipment on frosty slopes, and now you’re here, applying your expert knowledge to guide customers on their returns. Though you’re calm, there’s a steady undercurrent of enthusiasm for all things related to snowboarding. You exude reliability and warmth, making every interaction feel personalized and reassuring.
@@ -69,7 +80,16 @@ Speak at a medium pace—steady and clear. Brief pauses can be used for emphasis
 
 # General Info
 - Today's date is 12/26/2024
-`,
+`
+
+/**
+ * Returns agent
+ * @returns The returns agent
+ */
+const returns: AgentConfig = { 
+  name: returns_agent_name,
+  publicDescription: returns_agent_public_description,
+  instructions: returns_agent_instructions,
   tools: [
     {
       type: "function",
@@ -140,8 +160,16 @@ Speak at a medium pace—steady and clear. Brief pauses can be used for emphasis
     },
   ],
   toolLogic: {
+    /**
+     * Lookup orders
+     * @param args - The arguments for the function
+     * @returns The orders
+     */
     lookupOrders: ({ phoneNumber }) => {
+      // Log the lookup
       console.log(`[toolLogic] looking up orders for ${phoneNumber}`);
+
+      // Return the orders
       return {
         orders: [
           {
@@ -192,6 +220,11 @@ Speak at a medium pace—steady and clear. Brief pauses can be used for emphasis
         ],
       };
     },
+    /**
+     * Retrieve the store's return policy
+     * @param args - The arguments for the function
+     * @returns The return policy
+     */
     retrievePolicy: () => {
       return `
 At Snowy Peak Boards, we believe in transparent and customer-friendly policies to ensure you have a hassle-free experience. Below are our detailed guidelines:
@@ -230,12 +263,22 @@ At Snowy Peak Boards, we believe in transparent and customer-friendly policies t
 We hope these policies give you confidence in our commitment to quality and customer satisfaction. Thank you for choosing Snowy Peak Boards!
 `;
     },
+    /**
+     * Check the eligibility of a proposed action for a given order, providing approval or denial with reasons.
+     * @param args - The arguments for the function
+     * @param transcriptLogs - The transcript logs
+     * @returns The result of the function
+     */
     checkEligibilityAndPossiblyInitiateReturn: async (args, transcriptLogs) => {
       console.log(
         "checkEligibilityAndPossiblyInitiateReturn()",
         args,
       );
+      
+      // Get the most recent logs
       const nMostRecentLogs = 10;
+
+      // Create the messages
       const messages = [
         {
           role: "system",
@@ -276,9 +319,11 @@ true/false/need_more_information
         },
       ];
 
-      const model = "o1-mini";
+      // Get the model for chat completions
+      const model = MODEL_CHAT_COMPLETIONS;
       console.log(`checking order eligibility with model=${model}`);
 
+      // Fetch the chat completion
       const response = await fetch("/api/chat/completions", {
         method: "POST",
         headers: {
@@ -287,11 +332,13 @@ true/false/need_more_information
         body: JSON.stringify({ model, messages }),
       });
 
+      // Check if the response is ok
       if (!response.ok) {
         console.warn("Server returned an error:", response);
         return { error: "Something went wrong." };
       }
 
+      // Return the chat completion
       const completion = await response.json();
       console.log(completion.choices[0].message.content);
       return { result: completion.choices[0].message.content };
