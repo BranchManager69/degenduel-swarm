@@ -64,6 +64,8 @@
 - **Development Server**: Port 3009
 - **Production Server**: Port 3010
 - **NGINX Configuration**: Located in `nginx/game.degenduel.me`
-- **Domain**: game.degenduel.me
+- **Domains**: 
+  - game.degenduel.me
+  - talk.degenduel.me (running on port 3009)
 - **Deployment Guide**: See `docs/DEPLOYMENT.md`
 - **NGINX Setup**: See `docs/NGINX_SETUP.md`

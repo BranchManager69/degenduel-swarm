@@ -520,7 +520,8 @@ function App() {
                 >
                   {selectedAgentConfigSet?.map(agent => (
                     <option key={agent.name} value={agent.name}>
-                      {agent.name.includes("gameMaster") ? "Game Master" : "Player"}
+                      {agent.name.includes("gameMaster") ? "Game Master" : 
+                       agent.name.includes("customerSupport") ? "Customer Support" : "Player"}
                     </option>
                   ))}
                 </select>
