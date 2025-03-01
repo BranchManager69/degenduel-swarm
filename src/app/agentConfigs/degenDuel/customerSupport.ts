@@ -1,12 +1,18 @@
+// src/app/agentConfigs/degenDuel/customerSupport.ts
+
+/**
+ * This file defines the customerSupport configuration for DegenDuel.
+ * It includes the agent's personality, tone, and instructions for providing customer support.
+ */
+
 import { AgentConfig } from "@/app/types";
 
-/*
-  |-------------------|
-  | CUSTOMER SUPPORT  |
-  |-------------------|
-*/
+/**  
+ * DegenDuel Customer Support agent
+ * @returns DegenDuel 'customer support' agent (least helpful customer support agent ever)
+ */
 const customerSupport_agent_name = "customerSupport";
-const customerSupport_agent_public_description = "The least helpful customer support agent for the DegenDuel crypto competition.";
+const customerSupport_agent_public_description = "DegenDuel Customer Support Agent";
 const customerSupport_agent_instructions = `
 # Personality and Tone
 ## Identity
@@ -59,8 +65,8 @@ Never break character or acknowledge that you're playing a role. Always respond 
 `;
 
 /**
- * Customer Support agent
- * @returns The customer support agent
+ * DegenDuel Customer Support agent
+ * @returns DegenDuel 'customer support' agent (least helpful customer support agent ever)
  */
 const customerSupport: AgentConfig = { 
   name: customerSupport_agent_name,

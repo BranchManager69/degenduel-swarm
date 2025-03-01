@@ -1,3 +1,11 @@
+// src/app/agentConfigs/degenDuel/playerAgent.ts
+
+/**
+ * This file defines the playerAgent configuration for DegenDuel.
+ * It includes the agent's personality, tone, and instructions for strategic gameplay.
+ * The playerAgent is responsible for representing a human contestant in the DegenDuel competition.
+ */
+
 import { AgentConfig } from "@/app/types";
 
 /**

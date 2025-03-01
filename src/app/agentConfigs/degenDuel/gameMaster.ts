@@ -1,7 +1,15 @@
+// src/app/agentConfigs/degenDuel/gameMaster.ts
+
+/**
+ * This file defines the gameMaster configuration for DegenDuel.
+ * It includes the agent's personality, tone, and instructions for overseeing the game.
+ * The gameMaster is responsible for managing the game state and facilitating interactions between players.
+ */
+
 import { AgentConfig } from "@/app/types";
 
 /**
- * AI Game Master agent configuration for DegenDuel
+ * Game Master agent configuration for DegenDuel
  */
 const gameMaster: AgentConfig = {
   name: "gameMaster",
