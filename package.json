@@ -13,6 +13,7 @@
     "start-bg": "npm run kill-prod && npm run clear-logs-prod && sleep 1 && nohup npx next start -p 3010 > logs/prod/$(date +%Y-%m-%d).log 2>&1 &",
     "deploy": "npm run kill-all && npm run clear-logs-prod && sleep 1 && npx next build && npx next start -p 3010",
     "deploy-bg": "npm run kill-all && npm run clear-logs-prod && sleep 1 && nohup bash -c 'npx next build && npx next start -p 3010' > logs/prod/$(date +%Y-%m-%d).log 2>&1 &",
+    "serve": "npm run kill-all && npm run build && npm run dev-bg && npm run start-bg && echo '✅ Both servers started! Development on port 3009, Production on port 3010' && npm run status && npm run logs-dev && npm run logs-prod",
     "logs-dev": "tail -n 30 logs/dev/$(date +%Y-%m-%d).log",
     "logs-prod": "tail -n 30 logs/prod/$(date +%Y-%m-%d).log",
     "logs-dev-follow": "tail -f logs/dev/$(date +%Y-%m-%d).log",

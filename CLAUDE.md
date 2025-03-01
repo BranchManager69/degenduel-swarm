@@ -16,10 +16,12 @@
 - `npm run start-bg` - Start production server on port 3010 in background
 
 ### Running Both Servers Simultaneously
-- First build the production version: `npm run build`
-- Then start development server: `npm run dev-bg`
-- Then start production server: `npm run start-bg`
-- Check both servers: `npm run status`
+- Single command: `npm run serve` - Builds and starts both servers with status check and recent logs
+- Manual approach:
+  1. First build the production version: `npm run build`
+  2. Then start development server: `npm run dev-bg`
+  3. Then start production server: `npm run start-bg`
+  4. Check both servers: `npm run status`
 
 ### Utilities
 - `npm run kill-dev` - Stop processes on development port (3009)

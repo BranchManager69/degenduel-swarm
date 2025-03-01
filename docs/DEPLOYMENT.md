@@ -59,6 +59,7 @@ The following scripts are available for deployment management:
 | `npm run start-bg` | Start the production server on port 3010 (background) |
 | `npm run deploy` | Build and start the production server (foreground) |
 | `npm run deploy-bg` | Build and start the production server (background) |
+| `npm run serve` | Build and start both development (3009) and production (3010) servers with logs |
 | `npm run kill-dev` | Stop processes on development port (3009) |
 | `npm run kill-prod` | Stop processes on production port (3010) |
 | `npm run kill-all` | Stop processes on both ports |

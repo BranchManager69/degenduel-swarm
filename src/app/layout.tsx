@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { EnvIndicator } from "./components/EnvIndicator";
 
 export const metadata: Metadata = {
   title: "DegenDuel | Strategic Crypto Portfolio Competition",
@@ -16,7 +17,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        {children}
+        <EnvIndicator />
+      </body>
     </html>
   );
 }
