@@ -1,0 +1,75 @@
+[
+  {
+    type: "function",
+    name: "analyzePortfolio",
+    description: "Analyzes a user's current portfolio composition and provides strategic insights.",
+    parameters: {
+      type: "object",
+      properties: {
+        portfolioType: {
+          type: "string",
+          description: "Type of portfolio analysis to perform",
+          enum: ["risk", "diversification", "momentum", "narrative", "comprehensive"]
+        },
+        timeHorizon: {
+          type: "string",
+          description: "Time frame for the analysis",
+          enum: ["short", "medium", "long"]
+        }
+      },
+      required: ["portfolioType"]
+    }
+  },
+  {
+    type: "function",
+    name: "getTrendingTokens",
+    description: "Retrieves information about trending tokens that might be strategic picks.",
+    parameters: {
+      type: "object",
+      properties: {
+        category: {
+          type: "string",
+          description: "Category of tokens to analyze",
+          enum: ["defi", "gaming", "l1", "l2", "meme", "ai", "all"]
+        },
+        sortBy: {
+          type: "string",
+          description: "How to sort the results",
+          enum: ["volume", "momentum", "social", "fundamentals"]
+        },
+        riskLevel: {
+          type: "string",
+          description: "Risk level filter",
+          enum: ["low", "medium", "high", "extreme"]
+        }
+      },
+      required: ["category"]
+    }
+  },
+  {
+    type: "function",
+    name: "getSocialStrategyAdvice",
+    description: "Provides strategic advice on social gameplay elements.",
+    parameters: {
+      type: "object",
+      properties: {
+        currentPosition: {
+          type: "string",
+          description: "User's current standing in the contest",
+          enum: ["leading", "middle", "trailing"]
+        },
+        phaseOfContest: {
+          type: "string",
+          description: "Current phase of the contest",
+          enum: ["early", "middle", "late", "final"]
+        },
+        strategyType: {
+          type: "string",
+          description: "Type of social strategy advice needed",
+          enum: ["alliance", "voting", "perception", "communication"]
+        }
+      },
+      required: ["currentPosition", "phaseOfContest"]
+    }
+  }
+]

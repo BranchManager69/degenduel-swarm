@@ -50,11 +50,21 @@ function Events({ isExpanded }: EventsProps) {
               const isError =
                 log.eventName.toLowerCase().includes("error") ||
                 log.eventData?.response?.status_details?.error != null;
+              
+              // Check if this is a function call (tool use) event
+              const isFunctionCall = 
+                log.eventName.includes("function_call") || 
+                (log.eventData && 
+                  (log.eventData.item?.type === "function_call" || 
+                   log.eventData.item?.type === "function_call_output" ||
+                   log.eventData.output?.some((item: any) => item.type === "function_call")));
 
               return (
                 <div
                   key={log.id}
-                  className="border-t border-gray-200 py-2 px-6 font-mono"
+                  className={`${isFunctionCall 
+                    ? "my-2 bg-purple-50 border border-purple-200 rounded-lg shadow-sm" 
+                    : "border-t border-gray-200"} py-2 px-6 font-mono`}
                 >
                   <div
                     onClick={() => toggleExpand(log.id)}
@@ -67,10 +77,13 @@ function Events({ isExpanded }: EventsProps) {
                       >
                       {arrowInfo.symbol}
                       </span>
+                      {isFunctionCall && <span className="mr-2">🛠️</span>}
                       <span
                         className={
                           "flex-1 text-sm " +
-                          (isError ? "text-red-600" : "text-gray-800")
+                          (isError 
+                            ? "text-red-600" 
+                            : (isFunctionCall ? "text-purple-700 font-semibold" : "text-gray-800"))
                         }
                       >
                         {log.eventName}
@@ -82,8 +95,10 @@ function Events({ isExpanded }: EventsProps) {
                   </div>
 
                   {log.expanded && log.eventData && (
-                    <div className="text-gray-800 text-left">
-                      <pre className="border-l-2 ml-1 border-gray-200 whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
+                    <div className={`${isFunctionCall ? "text-purple-800 bg-purple-50" : "text-gray-800"} text-left`}>
+                      <pre className={`border-l-2 ml-1 ${
+                        isFunctionCall ? "border-purple-300" : "border-gray-200"
+                      } whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2`}>
                         {JSON.stringify(log.eventData, null, 2)}
                       </pre>
                     </div>

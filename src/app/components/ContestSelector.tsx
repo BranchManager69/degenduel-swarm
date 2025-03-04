@@ -5,7 +5,7 @@ import { useContest, Contest } from "@/app/contexts/ContestContext";
 
 const ContestSelector: React.FC = () => {
   const { contests, selectedContest, setSelectedContest, isLoading, error, fetchContests } = useContest();
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(!selectedContest);
 
   // Format date to be more readable
   const formatDate = (dateString?: string) => {
@@ -63,19 +63,25 @@ const ContestSelector: React.FC = () => {
 
       {/* Contest Selection Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl max-h-[80vh] overflow-hidden flex flex-col">
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className={`bg-gray-800 rounded-lg shadow-lg w-full max-w-3xl max-h-[80vh] overflow-hidden flex flex-col ${!selectedContest ? 'border-2 border-indigo-500 animate-pulse-slow' : ''}`}>
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-gray-700 flex justify-between items-center">
-              <h3 className="text-xl font-bold text-white">Select a Contest</h3>
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <h3 className="text-xl font-bold text-white">
+                {!selectedContest ? 'Please Select a Contest to Begin' : 'Select a Contest'}
+              </h3>
+              
+              {/* Only show close button if a contest is already selected */}
+              {selectedContest && (
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="text-gray-400 hover:text-white"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
             </div>
 
             {/* Modal Content */}
@@ -134,10 +140,10 @@ const ContestSelector: React.FC = () => {
                       
                       <div className="flex gap-4 mt-3 text-sm text-gray-400">
                         <div>
-                          <span className="font-medium">Start:</span> {formatDate(contest.startDate)}
+                          <span className="font-medium">Start:</span> {formatDate(contest.start_time)}
                         </div>
                         <div>
-                          <span className="font-medium">End:</span> {formatDate(contest.endDate)}
+                          <span className="font-medium">End:</span> {formatDate(contest.end_time)}
                         </div>
                       </div>
                     </div>
@@ -148,18 +154,28 @@ const ContestSelector: React.FC = () => {
 
             {/* Modal Footer */}
             <div className="px-6 py-4 border-t border-gray-700 flex justify-end">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg mr-2"
-              >
-                Cancel
-              </button>
+              {selectedContest && (
+                <button
+                  onClick={() => setIsModalOpen(false)}
+                  className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg mr-2"
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 onClick={fetchContests}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
               >
                 Refresh Contests
               </button>
+              
+              {!selectedContest && (
+                <div className="flex-grow text-left mr-4">
+                  <p className="text-amber-400 text-sm font-medium">
+                    ⚠️ You must select a contest to continue
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

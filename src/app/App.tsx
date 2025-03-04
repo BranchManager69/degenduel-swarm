@@ -17,13 +17,14 @@ import { AgentConfig, SessionStatus } from "@/app/types";
 // Context providers & hooks
 import { useTranscript } from "@/app/contexts/TranscriptContext";
 import { useEvent } from "@/app/contexts/EventContext";
+import { useContest } from "@/app/contexts/ContestContext";
 import { useHandleServerEvent } from "./hooks/useHandleServerEvent";
 
 // Utilities
 import { createRealtimeConnection } from "./lib/realtimeConnection";
 
 // Agent configs
-import { allAgentSets, defaultAgentSetKey } from "@/app/agentConfigs";
+import { allAgentSets, defaultAgentSetKey, getHydratedAgentSets } from "@/app/agentConfigs";
 
 function App() {
   // Get the search params from the URL
@@ -87,7 +88,7 @@ function App() {
     setSelectedAgentName,
   });
 
-  // Use effect to set the agent config
+  // Use effect to set the agent config with contest data
   useEffect(() => {
     let finalAgentConfig = searchParams.get("agentConfig");
     if (!finalAgentConfig || !allAgentSets[finalAgentConfig]) {
@@ -99,16 +100,37 @@ function App() {
       return;
     }
 
-    // Get the agents from the agent config
+    // Just use the base agents when initializing, we'll update when contest changes
     const agents = allAgentSets[finalAgentConfig];
-
+    
     // Set the first agent as the selected agent
     const agentKeyToUse = agents[0]?.name || "";
 
     // Set the selected agent and config set
     setSelectedAgentName(agentKeyToUse);
     setSelectedAgentConfigSet(agents);
-  }, [searchParams]);
+  }, [searchParams]); // Only run once when search params change
+  
+  // Separate effect for contest changes
+  const { selectedContest } = useContest();
+  
+  useEffect(() => {
+    // Skip if we don't have a selected contest yet
+    if (!selectedContest) return;
+    
+    // Get the current agent config
+    const finalAgentConfig = searchParams.get("agentConfig") || defaultAgentSetKey;
+    
+    // Get the hydrated agents with contest data
+    const hydratedAgentSets = getHydratedAgentSets(selectedContest);
+    const agents = hydratedAgentSets[finalAgentConfig];
+    
+    // Update the agent config set with hydrated agents
+    setSelectedAgentConfigSet(agents);
+    
+    // We don't change the selected agent name, just update its data
+    console.log("Updated agent with contest data for:", selectedContest.name);
+  }, [selectedContest, searchParams]); // Re-run when contest changes
 
   // Use effect to connect to realtime
   useEffect(() => {
@@ -271,6 +293,7 @@ function App() {
           create_response: true,
         };
 
+    // Get instructions and tools
     const instructions = currentAgent?.instructions || "";
     const tools = currentAgent?.tools || [];
 
@@ -284,14 +307,19 @@ function App() {
         output_audio_format: "pcm16",
         input_audio_transcription: { model: "whisper-1" },
         turn_detection: turnDetection,
-        tools,
+        tools
       },
     };
 
     sendClientEvent(sessionUpdateEvent);
 
     if (shouldTriggerResponse) {
-      sendSimulatedUserMessage("hi");
+      // Use the selectedContest from the context
+      if (selectedContest) {
+        sendSimulatedUserMessage(`Hi, I'm here for the ${selectedContest.name} contest (${selectedContest.contest_code}).`);
+      } else {
+        sendSimulatedUserMessage("hi");
+      }
     }
   };
 
@@ -527,7 +555,8 @@ function App() {
                   {selectedAgentConfigSet?.map(agent => (
                     <option key={agent.name} value={agent.name}>
                       {agent.name.includes("gameMaster") ? "Game Master" : 
-                       agent.name.includes("customerSupport") ? "Customer Support" : "Player"}
+                       agent.name.includes("customerSupport") ? "Technical Support" : 
+                       agent.name.includes("playerAgent") ? "Strategy Advisor" : agent.name}
                     </option>
                   ))}
                 </select>

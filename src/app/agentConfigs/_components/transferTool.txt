@@ -1,0 +1,20 @@
+{
+  type: "function",
+  name: "transferAgents",
+  description: "Transfers the user to another agent that is more appropriate for their request.",
+  parameters: {
+    type: "object",
+    properties: {
+      targetAgent: {
+        type: "string",
+        description: "The agent to transfer to",
+        enum: ["glitch", "theStrategist", "didi"]
+      },
+      reason: {
+        type: "string",
+        description: "The reason for the transfer"
+      }
+    },
+    required: ["targetAgent", "reason"]
+  }
+}

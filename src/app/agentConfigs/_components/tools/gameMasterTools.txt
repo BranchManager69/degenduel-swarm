@@ -1,0 +1,150 @@
+[
+  {
+    type: "function",
+    name: "announceChallengeUpdate",
+    description: "Provides dramatic commentary on contestants' performance during immunity challenges.",
+    parameters: {
+      type: "object",
+      properties: {
+        playerUpdates: {
+          type: "array",
+          description: "Array of contestant performance updates",
+          items: {
+            type: "object",
+            properties: {
+              contestantName: {
+                type: "string",
+                description: "Name of the contestant"
+              },
+              portfolioChange: {
+                type: "number",
+                description: "Percentage change in portfolio value"
+              },
+              currentPosition: {
+                type: "number",
+                description: "Current position in the immunity challenge"
+              },
+              significantToken: {
+                type: "string",
+                description: "Token that most significantly affected the portfolio change"
+              },
+              strategyNote: {
+                type: "string",
+                description: "Notable aspect of contestant's strategy to highlight"
+              }
+            }
+          }
+        },
+        challengeContext: {
+          type: "string",
+          description: "Dramatic context about the current state of the immunity challenge"
+        }
+      },
+      required: ["playerUpdates", "challengeContext"]
+    }
+  },
+  {
+    type: "function",
+    name: "awardImmunity",
+    description: "Dramatically awards immunity idol to contestant based on challenge victory.",
+    parameters: {
+      type: "object",
+      properties: {
+        contestantName: {
+          type: "string",
+          description: "Name of the contestant receiving immunity"
+        },
+        victoryDetails: {
+          type: "string",
+          description: "How they won the immunity challenge"
+        },
+        dramaMoment: {
+          type: "string",
+          description: "Dramatic context to emphasize when awarding immunity"
+        }
+      },
+      required: ["contestantName", "victoryDetails"]
+    }
+  },
+  {
+    type: "function",
+    name: "tallyVote",
+    description: "Records and dramatically narrates a contestant's vote during tribal council.",
+    parameters: {
+      type: "object",
+      properties: {
+        voterName: {
+          type: "string",
+          description: "Name of the contestant casting the vote"
+        },
+        votedAgainst: {
+          type: "string",
+          description: "Name of the contestant being voted against"
+        },
+        voteConfessional: {
+          type: "string",
+          description: "Private rationale shared when casting vote"
+        },
+        dramaticTension: {
+          type: "string",
+          description: "Context about alliance dynamics or betrayal to emphasize"
+        }
+      },
+      required: ["voterName", "votedAgainst"]
+    }
+  },
+  {
+    type: "function",
+    name: "snuffTorch",
+    description: "Dramatically eliminates a contestant at tribal council with ceremonial torch snuffing.",
+    parameters: {
+      type: "object",
+      properties: {
+        contestantName: {
+          type: "string",
+          description: "Name of the contestant to eliminate"
+        },
+        voteCount: {
+          type: "number",
+          description: "Number of votes received"
+        },
+        tribalNarrative: {
+          type: "string",
+          description: "Dramatic narrative about how their elimination affects the game"
+        },
+        finalWords: {
+          type: "string",
+          description: "Brief parting message to deliver while snuffing torch"
+        }
+      },
+      required: ["contestantName", "voteCount"]
+    }
+  },
+  {
+    type: "function",
+    name: "probeTribe",
+    description: "Asks pointed, Jeff Probst-style questions to expose tribal dynamics and create tension.",
+    parameters: {
+      type: "object",
+      properties: {
+        targetContestant: {
+          type: "string",
+          description: "Contestant being questioned"
+        },
+        topicOfInterest: {
+          type: "string",
+          description: "Strategic topic to probe about (alliance, betrayal, strategy)"
+        },
+        relevantContext: {
+          type: "string",
+          description: "Background information that makes this question particularly tense"
+        },
+        followUpTarget: {
+          type: "string",
+          description: "Another contestant whose reaction should be sought after the answer"
+        }
+      },
+      required: ["targetContestant", "topicOfInterest"]
+    }
+  }
+]

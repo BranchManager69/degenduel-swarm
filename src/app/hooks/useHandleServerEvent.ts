@@ -61,14 +61,25 @@ export function useHandleServerEvent({
       });
       sendClientEvent({ type: "response.create" });
     } else if (functionCallParams.name === "transferAgents") {
-      const destinationAgent = args.destination_agent;
+      // Get targetAgent from the parameters
+      const targetAgent = args.targetAgent;
+      console.log("Transfer requested to:", targetAgent, "with reason:", args.reason);
+      
+      // Find the agent config for the target agent
       const newAgentConfig =
-        selectedAgentConfigSet?.find((a) => a.name === destinationAgent) || null;
+        selectedAgentConfigSet?.find((a) => a.name === targetAgent) || null;
+      
       if (newAgentConfig) {
-        setSelectedAgentName(destinationAgent);
+        // Set the new agent
+        setSelectedAgentName(targetAgent);
+        console.log("Transfer successful to agent:", targetAgent);
+      } else {
+        console.error("Transfer failed, agent not found:", targetAgent);
       }
+      
       const functionCallOutput = {
-        destination_agent: destinationAgent,
+        destination_agent: targetAgent,
+        reason: args.reason,
         did_transfer: !!newAgentConfig,
       };
       sendClientEvent({

@@ -1,0 +1,63 @@
+[
+  {
+    type: "function",
+    name: "getContestRules",
+    description: "Retrieves the official rules for a specific contest.",
+    parameters: {
+      type: "object",
+      properties: {
+        contestId: {
+          type: "string",
+          description: "ID of the contest to get rules for"
+        },
+        ruleSection: {
+          type: "string",
+          description: "Optional - specific section of rules to retrieve (eligibility, prizes, voting, alliances, portfolios, conduct, full)",
+          enum: ["eligibility", "prizes", "voting", "alliances", "portfolios", "conduct", "full"]
+        }
+      },
+      required: ["contestId"]
+    }
+  },
+  {
+    type: "function",
+    name: "getAccountStatus",
+    description: "Checks the status of a user's account and participation in contests.",
+    parameters: {
+      type: "object",
+      properties: {
+        checkType: {
+          type: "string",
+          description: "Type of account status check to perform",
+          enum: ["contestEligibility", "participationHistory", "accountStanding", "prizeHistory"]
+        }
+      },
+      required: ["checkType"]
+    }
+  },
+  {
+    type: "function",
+    name: "submitTechnicalIssue",
+    description: "Submits a technical issue report for the support team to investigate.",
+    parameters: {
+      type: "object",
+      properties: {
+        issueType: {
+          type: "string",
+          description: "Category of technical issue",
+          enum: ["loginProblem", "contestAccess", "portfolioUpdate", "votingError", "paymentIssue", "other"]
+        },
+        description: {
+          type: "string",
+          description: "Detailed description of the issue"
+        },
+        urgency: {
+          type: "string",
+          description: "How urgent the issue is",
+          enum: ["low", "medium", "high", "critical"]
+        }
+      },
+      required: ["issueType", "description"]
+    }
+  }
+]

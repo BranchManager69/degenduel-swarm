@@ -109,32 +109,47 @@ function Transcript({
                 </div>
               );
             } else if (type === "BREADCRUMB") {
+              const isToolCall = title.includes('function call:') || title.includes('function call result:');
+              
               return (
                 <div
                   key={itemId}
-                  className="flex flex-col justify-start items-start text-gray-500 text-sm"
+                  className={`flex flex-col justify-start items-start ${
+                    isToolCall 
+                      ? "my-2 p-2 bg-blue-50 border border-blue-200 rounded-lg shadow-sm w-full" 
+                      : "text-gray-500"
+                  } text-sm`}
                 >
                   <span className="text-xs font-mono">{timestamp}</span>
                   <div
-                    className={`whitespace-pre-wrap flex items-center font-mono text-sm text-gray-800 ${
-                      data ? "cursor-pointer" : ""
-                    }`}
+                    className={`whitespace-pre-wrap flex items-center font-mono text-sm ${
+                      isToolCall ? "font-semibold text-blue-700" : "text-gray-800"
+                    } ${data ? "cursor-pointer" : ""}`}
                     onClick={() => data && toggleTranscriptItemExpand(itemId)}
                   >
                     {data && (
                       <span
-                        className={`text-gray-400 mr-1 transform transition-transform duration-200 select-none font-mono ${
+                        className={`${isToolCall ? "text-blue-500" : "text-gray-400"} mr-1 transform transition-transform duration-200 select-none font-mono ${
                           expanded ? "rotate-90" : "rotate-0"
                         }`}
                       >
                         ▶
                       </span>
                     )}
-                    {title}
+                    {isToolCall ? (
+                      <div className="flex items-center">
+                        <span className="mr-2">🛠️</span> {/* Tool icon */}
+                        {title}
+                      </div>
+                    ) : (
+                      title
+                    )}
                   </div>
                   {expanded && data && (
-                    <div className="text-gray-800 text-left">
-                      <pre className="border-l-2 ml-1 border-gray-200 whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2">
+                    <div className={`${isToolCall ? "text-blue-800 bg-blue-50" : "text-gray-800"} text-left w-full`}>
+                      <pre className={`border-l-2 ml-1 ${
+                        isToolCall ? "border-blue-300" : "border-gray-200"
+                      } whitespace-pre-wrap break-words font-mono text-xs mb-2 mt-2 pl-2`}>
                         {JSON.stringify(data, null, 2)}
                       </pre>
                     </div>

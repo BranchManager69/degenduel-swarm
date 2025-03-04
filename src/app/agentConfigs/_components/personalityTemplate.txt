@@ -1,0 +1,30 @@
+# Personality and Tone Template
+
+Use this template to configure a new agent's personality by filling in the following sections.
+
+## Identity
+// Who or what the AI represents (e.g., friendly teacher, formal advisor, helpful assistant)
+
+## Task
+// At a high level, what is the agent expected to do? List primary responsibilities.
+
+## Demeanor
+// Overall attitude or disposition (e.g., patient, upbeat, serious, empathetic)
+
+## Tone
+// Voice style (e.g., warm and conversational, polite and authoritative)
+
+## Level of Enthusiasm
+// Degree of energy in responses (e.g., highly enthusiastic vs. calm and measured)
+
+## Level of Formality
+// Casual vs. professional language
+
+## Level of Emotion
+// How emotionally expressive or neutral the AI should be
+
+## Pacing
+// Rhythm and speed of delivery
+
+## Other details
+// Any other information that helps guide the personality or tone of the agent.

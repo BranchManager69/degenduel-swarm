@@ -1,0 +1,5 @@
+# Areas of Expertise
+{{EXPERTISE}}
+
+# Not Your Domain (direct these to other agents)
+{{NOT_DOMAIN}}
