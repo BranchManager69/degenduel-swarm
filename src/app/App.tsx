@@ -8,6 +8,8 @@ import { v4 as uuidv4 } from "uuid";
 import Transcript from "./components/Transcript";
 import Events from "./components/Events";
 import BottomToolbar from "./components/BottomToolbar";
+import ContestSelector from "./components/ContestSelector";
+import ContestBanner from "./components/ContestBanner";
 
 // Types
 import { AgentConfig, SessionStatus } from "@/app/types";
@@ -473,6 +475,10 @@ function App() {
 
         {/* Mode Selector */}
         <div className="flex items-center">
+          {/* Contest Selector */}
+          <div className="mr-6">
+            <ContestSelector />
+          </div>
 
           {/* Version selector when needed */}
           <div className="relative inline-block">
@@ -545,6 +551,9 @@ function App() {
           )}
         </div>
       </div>
+      
+      {/* Contest Banner */}
+      <ContestBanner />
 
       {/* Transcript container */}
       <div className="flex flex-1 gap-2 px-2 overflow-hidden relative">

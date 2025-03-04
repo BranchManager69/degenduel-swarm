@@ -1,3 +1,5 @@
+// src/app/lib/constants.ts
+
 /**
  * Constants for the DegenDuel application
  */
@@ -11,7 +13,8 @@ export const PROD_PORT = 3010;
 
 // OpenAI API constants
 export const OPENAI_API_BASE_URL = process.env.OPENAI_API_BASE_URL || 'https://api.openai.com/v1';
-export const OPENAI_REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-realtime-preview-2024-12-17';
+export const OPENAI_REALTIME_MODEL = process.env.OPENAI_REALTIME_MODEL || 'gpt-4o-mini-realtime-preview';
+export const OPENAI_REALTIME_MODEL_LARGE = process.env.OPENAI_REALTIME_MODEL_LARGE || 'gpt-4o-realtime-preview-2024-12-17';
 
 // Application defaults
 export const DEFAULT_AGENT_SET = 'degenDuel';

@@ -8,6 +8,25 @@
 
 import { AgentConfig } from "@/app/types";
 
+// NOTE: Game state would typically be managed externally through a database or state management system
+// This is just a reference structure of what the game state would look like
+// The actual implementation would use the tool functions to update state on the server
+/* 
+Example game state structure:
+{
+  players: [
+    { name: "CryptoKnight", isActive: true, hasImmunity: false, portfolioValue: 1000 },
+    { name: "TokenTitan", isActive: true, hasImmunity: false, portfolioValue: 1200 },
+    { name: "DegenDreamer", isActive: true, hasImmunity: false, portfolioValue: 850 },
+    { name: "BlockchainBaron", isActive: true, hasImmunity: false, portfolioValue: 950 },
+    { name: "SolanaStrategist", isActive: true, hasImmunity: false, portfolioValue: 1100 }
+  ],
+  votes: [], // Track votes in current round
+  round: 1,  // Current game round
+  winner: null // Name of winner when game ends
+}
+*/
+
 /**
  * Game Master agent configuration for DegenDuel
  */

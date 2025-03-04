@@ -1,3 +1,5 @@
+// src/app/lib/realtimeConnection.ts
+
 import { RefObject } from "react";
 import { OPENAI_API_BASE_URL, OPENAI_REALTIME_MODEL } from "./constants";
 

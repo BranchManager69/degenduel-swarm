@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { TranscriptProvider } from "@/app/contexts/TranscriptContext";
 import { EventProvider } from "@/app/contexts/EventContext";
+import { ContestProvider } from "@/app/contexts/ContestContext";
 import App from "./App";
 
 // Loading component for suspense fallback
@@ -12,12 +13,14 @@ const Loading = () => (
 
 export default function Page() {
   return (
-    <TranscriptProvider>
-      <EventProvider>
-        <Suspense fallback={<Loading />}>
-          <App />
-        </Suspense>
-      </EventProvider>
-    </TranscriptProvider>
+    <ContestProvider>
+      <TranscriptProvider>
+        <EventProvider>
+          <Suspense fallback={<Loading />}>
+            <App />
+          </Suspense>
+        </EventProvider>
+      </TranscriptProvider>
+    </ContestProvider>
   );
 }
